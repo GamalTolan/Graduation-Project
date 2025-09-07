@@ -20,7 +20,7 @@ namespace Graduation_Project.DAl.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+          
             
         }
     }
