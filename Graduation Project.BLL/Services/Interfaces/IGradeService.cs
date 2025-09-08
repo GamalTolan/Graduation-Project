@@ -1,15 +1,17 @@
-﻿using Graduation_Project.DAl.Models;
+﻿using Graduation_Project.BLL.ViewModels.GradeVM;
 using System.Collections.Generic;
 
 namespace Graduation_Project.BLL.Services.Interfaces
 {
     public interface IGradeService
     {
-        IEnumerable<Grade> GetAll();
-        Grade GetById(int id);
-        void Create(Grade grade);
-        void Update(Grade grade);
+        IEnumerable<GradeVM> GetAll();
+        GradeDetailsVM? GetById(int id);
+
+        void Add(BaseGradeVM vm);  
+        void Update(GradeVM vm);
         void Delete(int id);
-        IEnumerable<Grade> GetGradesByTraineeId(int traineeId);
+
+        GradeVM? GetForEdit(int id);
     }
 }

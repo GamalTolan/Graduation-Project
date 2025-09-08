@@ -1,39 +1,97 @@
 ﻿using Graduation_Project.BLL.Services.Interfaces;
+using Graduation_Project.BLL.ViewModels.UserVM;
 using Graduation_Project.DAl.Models;
-using Graduation_Project.DAl.Repositories.UserRepo;
+using Graduation_Project.DAl.Repositories;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Graduation_Project.BLL.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUnitOfWork unitOfWork)
         {
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public IEnumerable<User> GetAll() => _userRepository.GetAll();
-
-        public User GetById(int id) => _userRepository.GetById(id);
-
-        public void Create(User user) => _userRepository.Add(user);
-
-        public void Update(User user) => _userRepository.Update(user);
-
-        public void Delete(int id) => _userRepository.Delete(id);
-
-        public IEnumerable<User> SearchByName(string name) =>
-            _userRepository.SearchByName(name);
-
-        public IEnumerable<User> SearchByRole(string role)
+        public IEnumerable<UserVM> GetAll()
         {
-            if (Enum.TryParse<Role>(role, true, out var parsedRole))
-                return _userRepository.SearchByRole(parsedRole);
-
-            return new List<User>();
+            var users = _unitOfWork.Users.GetAll();
+            return users.Select(u => new UserVM
+            {
+                Id = u.Id,
+                Name = u.Name,
+                Email = u.Email,
+                Role = u.Role.ToString()   
+            }).ToList();
         }
 
+        public UserVM? GetById(int id)
+        {
+            var user = _unitOfWork.Users.GetById(id);
+            if (user == null) return null;
+
+            return new UserVM
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role.ToString()   
+            };
+        }
+
+
+        public void Add(CreateUserVM vm)
+        {
+            var user = new User
+            {
+                Name = vm.Name,
+                Email = vm.Email,
+                Role = vm.Role
+            };
+
+            _unitOfWork.Users.Add(user);
+            _unitOfWork.Save();
+        }
+
+        public void Update(EditUserVM vm)
+        {
+            var user = _unitOfWork.Users.GetById(vm.Id);
+            if (user == null) return;
+
+            user.Name = vm.Name;
+            user.Email = vm.Email;
+            user.Role = vm.Role;
+
+            _unitOfWork.Users.Update(user);
+            _unitOfWork.Save();
+        }
+
+        public void Delete(int id)
+        {
+            _unitOfWork.Users.Delete(id);
+            _unitOfWork.Save();
+        }
+
+        public EditUserVM? GetForEdit(int id)
+        {
+            var user = _unitOfWork.Users.GetById(id);
+            if (user == null) return null;
+
+            return new EditUserVM
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role
+            };
+        }
+
+        public bool IsEmailExists(string email)
+        {
+            return _unitOfWork.Users.GetAll().Any(u => u.Email == email);
+        }
     }
 }

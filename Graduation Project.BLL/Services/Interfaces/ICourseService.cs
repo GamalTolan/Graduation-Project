@@ -1,18 +1,29 @@
-﻿using Graduation_Project.BLL.ViewModels;
-using Graduation_Project.DAl.Models;
+﻿using Graduation_Project.BLL.ViewModels.CourseVM;
 using System.Collections.Generic;
 
 namespace Graduation_Project.BLL.Services.Interfaces
 {
     public interface ICourseService
     {
-        IEnumerable<Course> GetAll();
-        Course GetById(int id);
-        void Create(Course course);
-        void Update(Course course);
+        
+        IEnumerable<CourseVM> GetAll();
+
+        
+        CourseDetailsVM? GetById(int id);
+
+        
+        void Add(CreateCourseVM vm);
+
+        
+        void Update(EditCourseVM vm);
+
+        
         void Delete(int id);
-        IEnumerable<Course> SearchByName(string name);
-        IEnumerable<Course> SearchByCategory(Category category);
-        void AssignInstructor(int courseId, int instructorId);
+
+        
+        EditCourseVM? GetForEdit(int id);
+
+        
+        bool IsNameExists(string name);
     }
 }
