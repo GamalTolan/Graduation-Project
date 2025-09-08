@@ -43,5 +43,10 @@ namespace Graduation_Project.DAl.Repositories
             context.Set<T>().Update(entity);
 
         }
+        public int GetTotalCount()
+        {
+            return context.Set<T>().Count();
+        }
+
     }
 }

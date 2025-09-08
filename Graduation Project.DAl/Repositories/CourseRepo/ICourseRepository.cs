@@ -12,5 +12,7 @@ namespace Graduation_Project.DAl.Repositories.CourseRepo
         IEnumerable<Course> SearchByName(string name);
         IEnumerable<Course> SearchByCategory(Category category);
         void AssignInstructor(int courseId, int instructorId);
+
+        bool IsCourseNameExists(string courseName);
     }
 }

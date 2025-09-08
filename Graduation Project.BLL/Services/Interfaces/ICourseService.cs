@@ -1,4 +1,5 @@
-﻿using Graduation_Project.BLL.ViewModels.CourseVM;
+﻿using Graduation_Project.BLL.Pagination;
+using Graduation_Project.BLL.ViewModels.CourseVM;
 using System.Collections.Generic;
 
 namespace Graduation_Project.BLL.Services.Interfaces
@@ -11,7 +12,7 @@ namespace Graduation_Project.BLL.Services.Interfaces
         
         CourseDetailsVM? GetById(int id);
 
-        
+        PageResult<CourseVM> GetAllWithPagination(int pageNumber, int pageSize);
         void Add(CreateCourseVM vm);
 
         

@@ -21,6 +21,9 @@ namespace Graduation_Project.DAl.Models
         public string Name { get; set; }=string.Empty;
         [Required(ErrorMessage = "Category is required")]
         [StringLength(50)]
+        public string Description { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public Category Category { get; set; }
         public int? InstructorId { get; set; }
         public User? Instructor { get; set; }

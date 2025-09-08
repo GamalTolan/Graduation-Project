@@ -1,4 +1,5 @@
-﻿using Graduation_Project.BLL.Services.Interfaces;
+﻿using Graduation_Project.BLL.Pagination;
+using Graduation_Project.BLL.Services.Interfaces;
 using Graduation_Project.BLL.ViewModels.CourseVM;
 using Graduation_Project.DAl.Models;
 using Graduation_Project.DAl.Repositories;
@@ -24,7 +25,10 @@ namespace Graduation_Project.BLL.Services
             {
                 Id = c.Id,
                 Name = c.Name,
-                Category = c.Category.ToString(),
+                Description= c.Description,
+                StartDate= c.StartDate,
+                EndDate= c.EndDate,
+                Category = c.Category,
                 InstructorId = c.InstructorId,
                 InstructorName = c.Instructor?.Name ?? "N/A"
             }).ToList();
@@ -32,7 +36,7 @@ namespace Graduation_Project.BLL.Services
 
         public CourseDetailsVM? GetById(int id)
         {
-            var course = _unitOfWork.Courses.GetById(id);
+            Course course = _unitOfWork.Courses.GetById(id);
             if (course == null) return null;
 
             return new CourseDetailsVM
@@ -40,40 +44,60 @@ namespace Graduation_Project.BLL.Services
                 Id = course.Id,
                 Name = course.Name,
                 Category = course.Category,
-                StartDate = default,
-                EndDate = default,
-                IsActive = false,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate,
                 InstructorId = (int)course.InstructorId,
-                InstructorName = course.Instructor?.Name ?? "N/A"
+                InstructorName = course.Instructor.Name ?? "N/A"
             };
         }
 
         public void Add(CreateCourseVM vm)
         {
-            var course = new Course
+            Course course = new Course
             {
                 Name = vm.Name,
+                Description = vm.Description,
                 Category = vm.Category,
+                StartDate = vm.StartDate,
+                EndDate = vm.EndDate,
                 InstructorId = vm.InstructorId
-              
+
             };
 
             _unitOfWork.Courses.Add(course);
             _unitOfWork.Save();
         }
-
-        public void Update(EditCourseVM vm)
+        public EditCourseVM? GetForEdit(int id)
         {
-            var course = _unitOfWork.Courses.GetById(vm.Id);
-            if (course == null) return;
+            Course? course = _unitOfWork.Courses.GetById(id);
 
-            course.Name = vm.Name;
-            course.Category = vm.Category;
-            course.InstructorId = vm.InstructorId;
-          
+            return new EditCourseVM()
+            {
+                Id = course.Id,
+                Name = course.Name,
+                Description = course.Description,
+                Category = course.Category,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate,
+                InstructorId = (int) course.InstructorId
+            };
+        }
 
-            _unitOfWork.Courses.Update(course);
-            _unitOfWork.Save();
+        public void Update(EditCourseVM editCourseVM)
+        {
+            Course course = _unitOfWork.Courses.GetById(editCourseVM.Id);
+            if (course != null)
+            {
+                course.Name = editCourseVM.Name;
+                course.Description = editCourseVM.Description;
+                course.Category = editCourseVM.Category;
+                course.StartDate = editCourseVM.StartDate;
+                course.EndDate = editCourseVM.EndDate;
+                course.InstructorId = editCourseVM.InstructorId;
+
+                _unitOfWork.Courses.Update(course);
+                _unitOfWork.Save();
+            }
         }
 
         public void Delete(int id)
@@ -82,23 +106,33 @@ namespace Graduation_Project.BLL.Services
             _unitOfWork.Save();
         }
 
-        public EditCourseVM? GetForEdit(int id)
-        {
-            var course = _unitOfWork.Courses.GetById(id);
-            if (course == null) return null;
-
-            return new EditCourseVM
-            {
-                Id = course.Id,
-                Name = course.Name,
-                Category = course.Category,
-                InstructorId = (int)course.InstructorId
-            };
-        }
+        
 
         public bool IsNameExists(string name)
         {
-            return _unitOfWork.Courses.GetAll().Any(c => c.Name == name);
+            return _unitOfWork.Courses.IsCourseNameExists(name);
+        }
+
+        public PageResult<CourseVM> GetAllWithPagination(int pageNumber, int pageSize)
+        {
+            var courseVM = _unitOfWork.Courses.GetAllWithPagination(pageNumber, pageSize).Select(c => new CourseVM
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description,
+                Category = c.Category,
+                StartDate = c.StartDate,
+                EndDate = c.EndDate,
+                InstructorName =c.Instructor.Name ?? "N/A",
+            }).ToList();
+
+            return new PageResult<CourseVM>()
+            {
+                Items = courseVM,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = _unitOfWork.Courses.GetTotalCount()
+            };
         }
     }
 }

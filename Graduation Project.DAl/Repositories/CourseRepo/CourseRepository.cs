@@ -31,5 +31,9 @@ namespace Graduation_Project.DAl.Repositories.CourseRepo
             return context.Courses.Where(c => c.Name==name).ToList();
 
         }
+        public bool IsCourseNameExists(string courseName)
+        {
+            return context.Courses.Any(c => c.Name == courseName);
+        }
     }
 }
