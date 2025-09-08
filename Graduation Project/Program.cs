@@ -1,3 +1,5 @@
+using Graduation_Project.BLL.Services;
+using Graduation_Project.BLL.Services.Interfaces;
 using Graduation_Project.DAl.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +15,15 @@ namespace Graduation_Project
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<AppDbContext>(options =>
               options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+            builder.Services.AddScoped<ICourseService, CourseService>();
+            builder.Services.AddScoped<ISessionService, SessionService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IGradeService, GradeService>();
+
+
+
 
             var app = builder.Build();
 
