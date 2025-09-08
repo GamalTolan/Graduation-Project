@@ -1,6 +1,11 @@
 using Graduation_Project.BLL.Services;
 using Graduation_Project.BLL.Services.Interfaces;
 using Graduation_Project.DAl.Data;
+using Graduation_Project.DAl.Repositories;
+using Graduation_Project.DAl.Repositories.CourseRepo;
+using Graduation_Project.DAl.Repositories.GradeRepo;
+using Graduation_Project.DAl.Repositories.SessionRepo;
+using Graduation_Project.DAl.Repositories.UserRepo;
 using Microsoft.EntityFrameworkCore;
 
 namespace Graduation_Project
@@ -16,11 +21,20 @@ namespace Graduation_Project
             builder.Services.AddDbContext<AppDbContext>(options =>
               options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+            builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+            builder.Services.AddScoped<IGradeRepository, GradeRepository>();
+            
+
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<ISessionService, SessionService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IGradeService, GradeService>();
+            ;
 
 
 

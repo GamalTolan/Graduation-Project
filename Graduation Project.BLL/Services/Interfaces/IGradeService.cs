@@ -1,17 +1,20 @@
-﻿using Graduation_Project.BLL.ViewModels.GradeVM;
+﻿using Graduation_Project.BLL.Pagination;
+using Graduation_Project.BLL.ViewModels.GradeVM;
 using System.Collections.Generic;
 
 namespace Graduation_Project.BLL.Services.Interfaces
 {
     public interface IGradeService
     {
-        IEnumerable<GradeVM> GetAll();
-        GradeDetailsVM? GetById(int id);
+        void Add(BaseGradeVM vm);
+        
+        void Update(GradeDetailsVM vm);
 
-        void Add(BaseGradeVM vm);  
-        void Update(GradeVM vm);
         void Delete(int id);
 
-        GradeVM? GetForEdit(int id);
+        PageResult<GradeVM> GetAllWithPagination(int pageNumber, int pageSize); 
+        PageResult<GradeVM> GetGradesByTrainee(int traineeId, int pageNumber, int pageSize);
+        GradeDetailsVM? GetById(int id);
+        bool IsGradeExists(int traineeId, int sessionId);
     }
 }

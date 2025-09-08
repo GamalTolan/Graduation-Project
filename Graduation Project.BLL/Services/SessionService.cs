@@ -1,4 +1,5 @@
-﻿using Graduation_Project.BLL.Services.Interfaces;
+﻿using Graduation_Project.BLL.Pagination;
+using Graduation_Project.BLL.Services.Interfaces;
 using Graduation_Project.BLL.ViewModels.SessionVM;
 using Graduation_Project.DAl.Models;
 using Graduation_Project.DAl.Repositories;
@@ -22,49 +23,63 @@ namespace Graduation_Project.BLL.Services
             return sessions.Select(s => new SessionVM
             {
                 Id = s.Id,
+                CourseName = s.Course?.Name ?? "N/A",
                 StartDate = s.StartDate,
-                EndDate = s.EndDate,
-                // شيل CourseId لأنه مش موجود في SessionVM
-                CourseName = s.Course?.Name ?? "N/A"
+                EndDate = s.EndDate
             }).ToList();
         }
 
         public SessionDetailsVM? GetById(int id)
         {
-            var session = _unitOfWork.Sessions.GetById(id);
+            Session session = _unitOfWork.Sessions.GetById(id);
             if (session == null) return null;
 
             return new SessionDetailsVM
             {
                 Id = session.Id,
+                CourseName = session.Course?.Name ?? "N/A",
                 StartDate = session.StartDate,
-                EndDate = session.EndDate,
-                CourseName = session.Course?.Name ?? "N/A"
+                EndDate = session.EndDate
             };
         }
 
 
         public void Add(CreateSessionVM vm)
         {
-            var session = new Session
+            Session session = new Session
             {
-                CourseId = vm.CourseId,
+                CourseId = vm.CourseId, 
                 StartDate = vm.StartDate,
-                EndDate = vm.EndDate
+                EndDate = vm.EndDate,
+       
             };
 
             _unitOfWork.Sessions.Add(session);
             _unitOfWork.Save();
         }
+        public EditSessionVM? GetForEdit(int id)
+        {
+            Session session = _unitOfWork.Sessions.GetById(id);
+            if (session == null) return null;
+
+            return new EditSessionVM
+            {
+                Id = session.Id,
+                CourseId = session.CourseId,
+                StartDate = session.StartDate,
+                EndDate = session.EndDate
+            };
+        }
 
         public void Update(EditSessionVM vm)
         {
-            var session = _unitOfWork.Sessions.GetById(vm.Id);
+            Session session = _unitOfWork.Sessions.GetById(vm.Id);
             if (session == null) return;
 
             session.CourseId = vm.CourseId;
             session.StartDate = vm.StartDate;
             session.EndDate = vm.EndDate;
+            
 
             _unitOfWork.Sessions.Update(session);
             _unitOfWork.Save();
@@ -76,18 +91,36 @@ namespace Graduation_Project.BLL.Services
             _unitOfWork.Save();
         }
 
-        public EditSessionVM? GetForEdit(int id)
+        public PageResult<SessionVM> GetAllWithPagination(int pageNumber, int pageSize)
         {
-            var session = _unitOfWork.Sessions.GetById(id);
-            if (session == null) return null;
+            var sessions = _unitOfWork.Sessions.GetAllWithPagination(pageNumber, pageSize)
+                .Select(s => new SessionVM
+                {
+                    Id = s.Id,
+                    CourseName = s.Course?.Name ?? "N/A",
+                    StartDate = s.StartDate,
+                    EndDate = s.EndDate
+                }).ToList();
 
-            return new EditSessionVM
+            return new PageResult<SessionVM>
             {
-                Id = session.Id,
-                CourseId = session.CourseId,
-                StartDate = session.StartDate,
-                EndDate = session.EndDate
+                Items = sessions,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = _unitOfWork.Sessions.GetTotalCount()
             };
+        }
+
+        public IEnumerable<SessionVM> GetByCourseName(string courseName)
+        {
+            return _unitOfWork.Sessions.GetSessionsByCourseName(courseName)
+                .Select(s => new SessionVM
+                {
+                    Id = s.Id,
+                    CourseName = s.Course?.Name ?? "N/A",
+                    StartDate = s.StartDate,
+                    EndDate = s.EndDate
+                }).ToList();
         }
     }
 }

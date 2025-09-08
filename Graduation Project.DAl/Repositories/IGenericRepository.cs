@@ -14,5 +14,6 @@ namespace Graduation_Project.DAl.Repositories
         void Update(T entity);
         void Delete(int id);
         IEnumerable<T> GetAllWithPagination(int pageNumber, int pageSize);
+        int GetTotalCount();
     }
 }

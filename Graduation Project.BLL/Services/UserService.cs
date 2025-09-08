@@ -1,4 +1,5 @@
-﻿using Graduation_Project.BLL.Services.Interfaces;
+﻿using Graduation_Project.BLL.Pagination;
+using Graduation_Project.BLL.Services.Interfaces;
 using Graduation_Project.BLL.ViewModels.UserVM;
 using Graduation_Project.DAl.Models;
 using Graduation_Project.DAl.Repositories;
@@ -30,7 +31,7 @@ namespace Graduation_Project.BLL.Services
 
         public UserVM? GetById(int id)
         {
-            var user = _unitOfWork.Users.GetById(id);
+            User user = _unitOfWork.Users.GetById(id);
             if (user == null) return null;
 
             return new UserVM
@@ -38,14 +39,15 @@ namespace Graduation_Project.BLL.Services
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
-                Role = user.Role.ToString()   
+                Role = user.Role.ToString()  
+                
             };
         }
 
 
         public void Add(CreateUserVM vm)
         {
-            var user = new User
+            User user = new User
             {
                 Name = vm.Name,
                 Email = vm.Email,
@@ -55,10 +57,22 @@ namespace Graduation_Project.BLL.Services
             _unitOfWork.Users.Add(user);
             _unitOfWork.Save();
         }
+        public EditUserVM? GetForEdit(int id)
+        {
+            User user = _unitOfWork.Users.GetById(id);
+            if (user == null) return null;
 
+            return new EditUserVM
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role
+            };
+        }
         public void Update(EditUserVM vm)
         {
-            var user = _unitOfWork.Users.GetById(vm.Id);
+            User user = _unitOfWork.Users.GetById(vm.Id);
             if (user == null) return;
 
             user.Name = vm.Name;
@@ -75,23 +89,54 @@ namespace Graduation_Project.BLL.Services
             _unitOfWork.Save();
         }
 
-        public EditUserVM? GetForEdit(int id)
-        {
-            var user = _unitOfWork.Users.GetById(id);
-            if (user == null) return null;
-
-            return new EditUserVM
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email,
-                Role = user.Role
-            };
-        }
+       
 
         public bool IsEmailExists(string email)
         {
             return _unitOfWork.Users.GetAll().Any(u => u.Email == email);
+        }
+        public PageResult<UserVM> GetAllWithPagination(int pageNumber, int pageSize)
+        {
+            var users = _unitOfWork.Users.GetAllWithPagination(pageNumber, pageSize)
+                .Select(u => new UserVM
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Email = u.Email,
+                    Role = u.Role.ToString()
+                }).ToList();
+
+            return new PageResult<UserVM>
+            {
+                Items = users,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = _unitOfWork.Users.GetTotalCount()
+            };
+        }
+
+        public IEnumerable<UserVM> SearchByName(string name)
+        {
+            return _unitOfWork.Users.SearchByName(name)
+                .Select(u => new UserVM
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Email = u.Email,
+                    Role = u.Role.ToString()
+                }).ToList();
+        }
+
+        public IEnumerable<UserVM> SearchByRole(Role role)
+        {
+            return _unitOfWork.Users.SearchByRole(role)
+                .Select(u => new UserVM
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Email = u.Email,
+                    Role = u.Role.ToString()
+                }).ToList();
         }
     }
 }

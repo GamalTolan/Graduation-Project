@@ -1,4 +1,5 @@
-﻿using Graduation_Project.BLL.Services.Interfaces;
+﻿using Graduation_Project.BLL.Pagination;
+using Graduation_Project.BLL.Services.Interfaces;
 using Graduation_Project.BLL.ViewModels.GradeVM;
 using Graduation_Project.DAl.Models;
 using Graduation_Project.DAl.Repositories;
@@ -16,80 +17,117 @@ namespace Graduation_Project.BLL.Services
             _unitOfWork = unitOfWork;
         }
 
-        public IEnumerable<GradeVM> GetAll()
-        {
-            var grades = _unitOfWork.Grades.GetAll();
-            return grades.Select(g => new GradeVM
-            {
-                Id = g.Id,
-                Value = g.Value,
-                SessionId = g.SessionId,
-                SessionName = g.Session?.Course?.Name ?? "N/A",
-                TraineeId = g.TraineeId,
-                TraineeName = g.Trainee?.Name ?? "N/A"
-            }).ToList();
-        }
-
-        public GradeDetailsVM? GetById(int id)
-        {
-            var grade = _unitOfWork.Grades.GetById(id);
-            if (grade == null) return null;
-
-            return new GradeDetailsVM
-            {
-                Id = grade.Id,
-                Value = grade.Value,
-                SessionId = grade.SessionId,
-                SessionName = grade.Session?.Course?.Name ?? "N/A",
-                TraineeId = grade.TraineeId,
-                TraineeName = grade.Trainee?.Name ?? "N/A"
-            };
-        }
-
         public void Add(BaseGradeVM vm)
         {
-            var grade = new Grade
+            Grade grade = new Grade
             {
-                Value = vm.Value,
+                TraineeId = vm.TraineeId,
                 SessionId = vm.SessionId,
-                TraineeId = vm.TraineeId
+                Value = vm.Value
             };
 
             _unitOfWork.Grades.Add(grade);
             _unitOfWork.Save();
         }
 
-        public void Update(GradeVM vm)
+        public void Update(GradeDetailsVM vm)
         {
-            var grade = _unitOfWork.Grades.GetById(vm.Id);
-            if (grade == null) return;
+            Grade grade = _unitOfWork.Grades.GetById(vm.Id);
+            if (grade != null)
+            {
+                grade.Value = vm.Value;
+                grade.SessionId = vm.SessionId;
+                grade.TraineeId = vm.TraineeId;
 
-            grade.Value = vm.Value;
-            grade.SessionId = vm.SessionId;
-            grade.TraineeId = vm.TraineeId;
-
-            _unitOfWork.Grades.Update(grade);
-            _unitOfWork.Save();
+                _unitOfWork.Grades.Update(grade);
+                _unitOfWork.Save();
+            }
         }
 
+        
         public void Delete(int id)
         {
             _unitOfWork.Grades.Delete(id);
             _unitOfWork.Save();
         }
 
-        public GradeVM? GetForEdit(int id)
+        
+        public PageResult<GradeVM> GetAllWithPagination(int pageNumber, int pageSize)
         {
-            var grade = _unitOfWork.Grades.GetById(id);
+            var grades = _unitOfWork.Grades.GetAllWithPagination(pageNumber, pageSize)
+                .Select(g => new GradeVM
+                {
+                    Id = g.Id,
+                    Value = g.Value,
+                    SessionId = g.SessionId,
+                    TraineeId = g.TraineeId,
+                    TraineeName = g.Trainee.Name ?? "N/A",
+                    CourseName = g.Session?.Course?.Name ?? "N/A",
+                    SessionName = $"Session {g.SessionId}"
+                }).ToList();
+
+            return new PageResult<GradeVM>
+            {
+                Items = grades,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = _unitOfWork.Grades.GetTotalCount()
+            };
+        }
+
+        
+        public PageResult<GradeVM> GetGradesByTrainee(int traineeId, int pageNumber, int pageSize)
+        {
+            var grades = _unitOfWork.Grades.GetGradesByTraineeId(traineeId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(g => new GradeVM
+                {
+                    Id = g.Id,
+                    Value = g.Value,
+                    SessionId = g.SessionId,
+                    TraineeId = g.TraineeId,
+                    TraineeName = g.Trainee.Name ?? "N/A",
+                    CourseName = g.Session?.Course?.Name ?? "N/A",
+                    SessionName = $"Session {g.SessionId}"
+                }).ToList();
+
+            return new PageResult<GradeVM>
+            {
+                Items = grades,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = _unitOfWork.Grades.GetGradesByTraineeId(traineeId).Count()
+            };
+        }
+
+       
+        public GradeDetailsVM? GetById(int id)
+        {
+            Grade grade = _unitOfWork.Grades.GetById(id);
             if (grade == null) return null;
 
-            return new GradeVM
+            return new GradeDetailsVM
             {
                 Id = grade.Id,
                 Value = grade.Value,
+                TraineeId = grade.TraineeId,
                 SessionId = grade.SessionId,
-                TraineeId = grade.TraineeId
+                TraineeName = grade.Trainee.Name ?? "N/A",
+                CourseName = grade.Session?.Course?.Name ?? "N/A",
+                SessionName = $"Session {grade.SessionId}",
+                SessionStart = grade.Session?.StartDate ?? default,
+                SessionEnd = grade.Session?.EndDate ?? default
             };
+        }
+
+       
+        public bool IsGradeExists(int traineeId, int sessionId)
+        {
+            return _unitOfWork.Grades.GetAll()
+                .Any(g => g.TraineeId == traineeId && g.SessionId == sessionId);
         }
     }
 }
+    
+
