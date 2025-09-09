@@ -22,10 +22,10 @@ namespace Graduation_Project.BLL.Validators
             if (startDateProp == null)
                 return ValidationResult.Success;
 
-            var startDate = (DateTime)startDateProp.GetValue(validationContext.ObjectInstance)!;
-            var endDate = (DateTime)value!;
+            var startDate = startDateProp.GetValue(validationContext.ObjectInstance) as DateTime?;
+            var endDate = value as DateTime?;
 
-            if (endDate <= startDate)
+            if (startDate.HasValue && endDate.HasValue && endDate.Value <= startDate.Value)
                 return new ValidationResult("End Date must be after Start Date.");
 
             return ValidationResult.Success;

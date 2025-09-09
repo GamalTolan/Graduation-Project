@@ -4,6 +4,7 @@ using Graduation_Project.BLL.ViewModels.GradeVM;
 using Graduation_Project.DAl.Models;
 using Graduation_Project.DAl.Repositories;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Graduation_Project.BLL.Services
@@ -44,14 +45,14 @@ namespace Graduation_Project.BLL.Services
             }
         }
 
-        
+
         public void Delete(int id)
         {
             _unitOfWork.Grades.Delete(id);
             _unitOfWork.Save();
         }
 
-        
+
         public PageResult<GradeVM> GetAllWithPagination(int pageNumber, int pageSize)
         {
             var grades = _unitOfWork.Grades.GetAllWithPagination(pageNumber, pageSize)
@@ -61,9 +62,10 @@ namespace Graduation_Project.BLL.Services
                     Value = g.Value,
                     SessionId = g.SessionId,
                     TraineeId = g.TraineeId,
-                    TraineeName = g.Trainee.Name ?? "N/A",
-                    CourseName = g.Session?.Course?.Name ?? "N/A",
+                    TraineeName = _unitOfWork.Users.GetTraineeNameById(g.TraineeId) ?? "N/A",
+                    CourseName = _unitOfWork.Grades.GetCourseNameBySessionId(g.SessionId) ?? "N/A",
                     SessionName = $"Session {g.SessionId}"
+
                 }).ToList();
 
             return new PageResult<GradeVM>
@@ -75,7 +77,7 @@ namespace Graduation_Project.BLL.Services
             };
         }
 
-        
+
         public PageResult<GradeVM> GetGradesByTrainee(int traineeId, int pageNumber, int pageSize)
         {
             var grades = _unitOfWork.Grades.GetGradesByTraineeId(traineeId)
@@ -87,9 +89,10 @@ namespace Graduation_Project.BLL.Services
                     Value = g.Value,
                     SessionId = g.SessionId,
                     TraineeId = g.TraineeId,
-                    TraineeName = g.Trainee.Name ?? "N/A",
+                    TraineeName = _unitOfWork.Users.GetTraineeNameById(g.TraineeId) ?? "N/A",
                     CourseName = g.Session?.Course?.Name ?? "N/A",
                     SessionName = $"Session {g.SessionId}"
+
                 }).ToList();
 
             return new PageResult<GradeVM>
@@ -101,7 +104,7 @@ namespace Graduation_Project.BLL.Services
             };
         }
 
-       
+
         public GradeDetailsVM? GetById(int id)
         {
             Grade grade = _unitOfWork.Grades.GetById(id);
@@ -113,7 +116,7 @@ namespace Graduation_Project.BLL.Services
                 Value = grade.Value,
                 TraineeId = grade.TraineeId,
                 SessionId = grade.SessionId,
-                TraineeName = grade.Trainee.Name ?? "N/A",
+                TraineeName = _unitOfWork.Users.GetTraineeNameById(grade.TraineeId) ?? "N/A",
                 CourseName = grade.Session?.Course?.Name ?? "N/A",
                 SessionName = $"Session {grade.SessionId}",
                 SessionStart = grade.Session?.StartDate ?? default,
@@ -121,7 +124,7 @@ namespace Graduation_Project.BLL.Services
             };
         }
 
-       
+
         public bool IsGradeExists(int traineeId, int sessionId)
         {
             return _unitOfWork.Grades.GetAll()
@@ -129,5 +132,3 @@ namespace Graduation_Project.BLL.Services
         }
     }
 }
-    
-

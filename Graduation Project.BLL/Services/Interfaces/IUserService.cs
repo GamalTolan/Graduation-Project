@@ -21,5 +21,6 @@ namespace Graduation_Project.BLL.Services.Interfaces
         PageResult<UserVM> GetAllWithPagination(int pageNumber, int pageSize);
         IEnumerable<UserVM> SearchByName(string name);
         IEnumerable<UserVM> SearchByRole(Role role);
+        IEnumerable<UserVM> GetInstructors();
     }
 }

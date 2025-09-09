@@ -10,5 +10,6 @@ namespace Graduation_Project.DAl.Repositories.GradeRepo
     public interface IGradeRepository : IGenericRepository<Grade>
     {
         IEnumerable<Grade> GetGradesByTraineeId(int traineeId);
+        string GetCourseNameBySessionId(int sessionId);
     }
 }

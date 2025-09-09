@@ -1,0 +1,52 @@
+﻿@model PageResult<SessionVM>
+
+@{
+    ViewData["Title"] = "Sessions";
+}
+
+<h2>Sessions</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Session</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Course</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var session in Model.Items)
+        {
+            <tr>
+                <td>@session.CourseName</td>
+                <td>@session.StartDate.ToShortDateString()</td>
+                <td>@session.EndDate.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@session.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@session.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@session.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    Page @(Model.PageNumber) of @((Model.TotalItems + Model.PageSize - 1) / Model.PageSize)
+</div>
+
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= (Model.TotalItems + Model.PageSize - 1) / Model.PageSize; i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

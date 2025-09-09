@@ -14,5 +14,8 @@ namespace Graduation_Project.DAl.Repositories.CourseRepo
         void AssignInstructor(int courseId, int instructorId);
 
         bool IsCourseNameExists(string courseName);
+        Course GetByIdWithInstructor(int id);
+        IEnumerable<Course> GetAllWithInstructor();
+        string GetCourseName(int courseId);
     }
 }

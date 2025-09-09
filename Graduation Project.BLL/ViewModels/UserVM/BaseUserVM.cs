@@ -17,7 +17,7 @@ namespace Graduation_Project.BLL.ViewModels.UserVM
         public string Name { get; set; }
 
         [Required, EmailAddress]
-        //[Remote("IsEmailUnique", "User", AdditionalFields = "Id", ErrorMessage = "Email already exists")]
+        [Remote("IsEmailUnique", "User", AdditionalFields = "Id", ErrorMessage = "This Email already exists")]
         public string Email { get; set; }
 
         [Required]
