@@ -138,5 +138,18 @@ namespace Graduation_Project.BLL.Services
                     Role = u.Role.ToString()
                 }).ToList();
         }
+        public IEnumerable<UserVM> GetInstructors()
+        {
+            return _unitOfWork.Users
+                .GetAll()  // get all users
+                .Where(u => u.Role == Role.Instructor) // filter only instructors
+                .Select(u => new UserVM
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Email = u.Email
+                })
+                .ToList();
+        }
     }
 }

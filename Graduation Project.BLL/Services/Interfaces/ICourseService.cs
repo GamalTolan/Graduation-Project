@@ -26,5 +26,6 @@ namespace Graduation_Project.BLL.Services.Interfaces
 
         
         bool IsNameExists(string name);
+        
     }
 }

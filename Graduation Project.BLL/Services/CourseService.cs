@@ -19,7 +19,7 @@ namespace Graduation_Project.BLL.Services
 
         public IEnumerable<CourseVM> GetAll()
         {
-            var courses = _unitOfWork.Courses.GetAll();
+            var courses = _unitOfWork.Courses.GetAllWithInstructor();
 
             return courses.Select(c => new CourseVM
             {
@@ -30,24 +30,26 @@ namespace Graduation_Project.BLL.Services
                 EndDate= c.EndDate,
                 Category = c.Category,
                 InstructorId = c.InstructorId,
-                InstructorName = c.Instructor?.Name ?? "N/A"
+                InstructorName = c.Instructor != null ? c.Instructor.Name : "N/A"
+
             }).ToList();
         }
 
         public CourseDetailsVM? GetById(int id)
         {
-            Course course = _unitOfWork.Courses.GetById(id);
+            Course course = _unitOfWork.Courses.GetByIdWithInstructor(id);
             if (course == null) return null;
 
             return new CourseDetailsVM
             {
                 Id = course.Id,
                 Name = course.Name,
+                Description = course.Description,
                 Category = course.Category,
                 StartDate = course.StartDate,
                 EndDate = course.EndDate,
                 InstructorId = (int)course.InstructorId,
-                InstructorName = course.Instructor.Name ?? "N/A"
+                InstructorName = course.Instructor != null ? course.Instructor.Name : "N/A"
             };
         }
 
@@ -115,7 +117,9 @@ namespace Graduation_Project.BLL.Services
 
         public PageResult<CourseVM> GetAllWithPagination(int pageNumber, int pageSize)
         {
-            var courseVM = _unitOfWork.Courses.GetAllWithPagination(pageNumber, pageSize).Select(c => new CourseVM
+            var courses = _unitOfWork.Courses.GetAllWithPagination(pageNumber, pageSize);
+
+            var courseVM = courses.Select(c => new CourseVM
             {
                 Id = c.Id,
                 Name = c.Name,
@@ -123,10 +127,11 @@ namespace Graduation_Project.BLL.Services
                 Category = c.Category,
                 StartDate = c.StartDate,
                 EndDate = c.EndDate,
-                InstructorName =c.Instructor.Name ?? "N/A",
+                InstructorId = c.InstructorId,
+                InstructorName = c.Instructor != null ? c.Instructor.Name : "N/A",
             }).ToList();
 
-            return new PageResult<CourseVM>()
+            return new PageResult<CourseVM>
             {
                 Items = courseVM,
                 PageNumber = pageNumber,
@@ -134,5 +139,7 @@ namespace Graduation_Project.BLL.Services
                 TotalItems = _unitOfWork.Courses.GetTotalCount()
             };
         }
+
+        
     }
 }

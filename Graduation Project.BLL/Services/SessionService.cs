@@ -11,6 +11,8 @@ namespace Graduation_Project.BLL.Services
     public class SessionService : ISessionService
     {
         private readonly IUnitOfWork _unitOfWork;
+       // private readonly ICourseService _courseService;
+
 
         public SessionService(IUnitOfWork unitOfWork)
         {
@@ -23,7 +25,7 @@ namespace Graduation_Project.BLL.Services
             return sessions.Select(s => new SessionVM
             {
                 Id = s.Id,
-                CourseName = s.Course?.Name ?? "N/A",
+                CourseName = _unitOfWork.Courses.GetCourseName(s.CourseId),
                 StartDate = s.StartDate,
                 EndDate = s.EndDate
             }).ToList();
@@ -37,7 +39,7 @@ namespace Graduation_Project.BLL.Services
             return new SessionDetailsVM
             {
                 Id = session.Id,
-                CourseName = session.Course?.Name ?? "N/A",
+                CourseName = _unitOfWork.Courses.GetCourseName(session.CourseId),
                 StartDate = session.StartDate,
                 EndDate = session.EndDate
             };
@@ -97,7 +99,7 @@ namespace Graduation_Project.BLL.Services
                 .Select(s => new SessionVM
                 {
                     Id = s.Id,
-                    CourseName = s.Course?.Name ?? "N/A",
+                    CourseName = _unitOfWork.Courses.GetCourseName(s.CourseId),
                     StartDate = s.StartDate,
                     EndDate = s.EndDate
                 }).ToList();
@@ -117,7 +119,7 @@ namespace Graduation_Project.BLL.Services
                 .Select(s => new SessionVM
                 {
                     Id = s.Id,
-                    CourseName = s.Course?.Name ?? "N/A",
+                    CourseName = _unitOfWork.Courses.GetCourseName(s.CourseId),
                     StartDate = s.StartDate,
                     EndDate = s.EndDate
                 }).ToList();

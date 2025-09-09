@@ -14,7 +14,7 @@ namespace Graduation_Project.BLL.ViewModels.CourseVM
     {
         [Required(ErrorMessage = "Name is required")]
         [StringLength(50, MinimumLength = 3, ErrorMessage = "Name must be 3–50 characters")]
-        //[Remote(action: "IsCourseNameUnique", controller: "Course", AdditionalFields = "Id")]
+        [Remote(action: "CheckCourseNameIsUnique", controller: "Course", AdditionalFields = "Id",ErrorMessage = "Course Name already exists")]
         [NoNumber]
         public string Name { get; set; } = string.Empty;
 

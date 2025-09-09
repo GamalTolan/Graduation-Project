@@ -11,6 +11,9 @@ namespace Graduation_Project.BLL.Validators
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
+            if (value is null)
+                return ValidationResult.Success; 
+
             if (value is DateTime date && date < DateTime.Today)
                 return new ValidationResult("Date cannot be in the past.");
 

@@ -10,5 +10,7 @@ namespace Graduation_Project.DAl.Repositories.SessionRepo
     public interface ISessionRepository :IGenericRepository<Session>
     {
         IEnumerable<Session> GetSessionsByCourseName(string courseName);
+       
+        
     }
 }

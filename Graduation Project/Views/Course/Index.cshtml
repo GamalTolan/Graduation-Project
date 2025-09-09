@@ -1,0 +1,56 @@
+﻿@using Graduation_Project.BLL.Pagination
+@model PageResult<CourseVM>
+
+@{
+    ViewData["Title"] = "Courses";
+}
+
+<h2>Courses</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Start</th>
+            <th>End</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var course in Model.Items)
+    {
+        <tr>
+            <td>@course.Name</td>
+            <td>@course.Category</td>
+            <td>@course.StartDate.ToShortDateString()</td>
+            <td>@course.EndDate.ToShortDateString()</td>
+           
+            <td>
+                <a asp-action="Details" asp-route-id="@course.Id">Details</a> |
+                <a asp-action="Edit" asp-route-id="@course.Id">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@course.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<!-- Pagination -->
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+<a class="btn btn-primary" asp-action="Create">Create New</a>
