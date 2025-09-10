@@ -1,5 +1,6 @@
 ﻿using Graduation_Project.BLL.Pagination;
 using Graduation_Project.BLL.ViewModels.CourseVM;
+using Graduation_Project.DAl.Models;
 using System.Collections.Generic;
 
 namespace Graduation_Project.BLL.Services.Interfaces
@@ -26,6 +27,10 @@ namespace Graduation_Project.BLL.Services.Interfaces
 
         
         bool IsNameExists(string name);
-        
+
+        IEnumerable<CourseVM> SearchByName(string name);
+
+        IEnumerable<CourseVM> SearchByCategory(Category category);
+
     }
 }

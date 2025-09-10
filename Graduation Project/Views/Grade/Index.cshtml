@@ -5,64 +5,81 @@
 }
 
 <h2>Grades</h2>
-
-@if (TempData["Success"] != null)
+@if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success">@TempData["Success"]</div>
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
 }
 
+<!-- زرار Create -->
 <p>
-    <a asp-action="Create" class="btn btn-primary">Add New Grade</a>
+    <a asp-action="Create" class="btn btn-success">➕ Add New Grade</a>
 </p>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Trainee</th>
-            <th>Course</th>
-            <th>Session</th>
-            <th>Value</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var grade in Model.Items)
-        {
+
+
+<!-- البحث -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form asp-action="SearchByCourse" method="get" class="d-flex">
+            <input type="text" name="courseName" class="form-control me-2" placeholder="Search by Course Name..." />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <form asp-action="SearchByTrainee" method="get" class="d-flex">
+            <input type="text" name="traineeName" class="form-control me-2" placeholder="Search by Trainee Name..." />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+<!-- جدول الدرجات -->
+@if (Model.Items.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead>
             <tr>
-                <td>@grade.TraineeName</td>
-                <td>@grade.CourseName</td>
-                <td>@grade.SessionName</td>
-                <td>@grade.Value</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@grade.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Details" asp-route-id="@grade.Id" class="btn btn-sm btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@grade.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
+                <th>Trainee</th>
+                <th>Course</th>
+                <th>Session</th>
+                <th>Grade</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var grade in Model.Items)
+            {
+                <tr>
+                    <td>@grade.TraineeName</td>
+                    <td>@grade.CourseName</td>
+                    <td>@grade.SessionName</td>
+                    <td>@grade.Value</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@grade.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="Details" asp-route-id="@grade.Id" class="btn btn-info btn-sm">Details</a>
+                        <a asp-action="Delete" asp-route-id="@grade.Id" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">No grades found.</div>
+}
 
 <!-- Pagination -->
-<nav aria-label="Page navigation">
-    <ul class="pagination">
-        @{
-            int totalPages = (int)Math.Ceiling((double)Model.TotalItems / Model.PageSize);
-        }
-
-        <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
-            <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-pageSize="@Model.PageSize">Previous</a>
-        </li>
-
-        @for (int i = 1; i <= totalPages; i++)
-        {
-            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-pageSize="@Model.PageSize">@i</a>
-            </li>
-        }
-
-        <li class="page-item @(Model.PageNumber == totalPages ? "disabled" : "")">
-            <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
-        </li>
-    </ul>
-</nav>
+@if (Model.TotalItems > Model.PageSize)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= Math.Ceiling((decimal)Model.TotalItems / Model.PageSize); i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

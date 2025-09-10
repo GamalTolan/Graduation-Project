@@ -22,5 +22,6 @@ namespace Graduation_Project.BLL.Services.Interfaces
         IEnumerable<UserVM> SearchByName(string name);
         IEnumerable<UserVM> SearchByRole(Role role);
         IEnumerable<UserVM> GetInstructors();
+        
     }
 }

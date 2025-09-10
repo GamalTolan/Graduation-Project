@@ -87,6 +87,7 @@ namespace Graduation_Project.BLL.Services
 
         public void Update(EditCourseVM editCourseVM)
         {
+
             Course course = _unitOfWork.Courses.GetById(editCourseVM.Id);
             if (course != null)
             {
@@ -140,6 +141,36 @@ namespace Graduation_Project.BLL.Services
             };
         }
 
-        
+        public IEnumerable<CourseVM> SearchByName(string name)
+        {
+            return _unitOfWork.Courses.SearchByName(name)
+                .Select(c => new CourseVM
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Category = c.Category,
+                    StartDate = c.StartDate,
+                    EndDate = c.EndDate,
+                    InstructorName = c.Instructor?.Name ?? "N/A"
+                }).ToList();
+        }
+
+        public IEnumerable<CourseVM> SearchByCategory(Category category)
+        {
+            return _unitOfWork.Courses.SearchByCategory(category)
+                .Select(c => new CourseVM
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Category = c.Category,
+                    StartDate = c.StartDate,
+                    EndDate = c.EndDate,
+                    InstructorName = c.Instructor?.Name ?? "N/A"
+                }).ToList();
+        }
+
+
     }
 }

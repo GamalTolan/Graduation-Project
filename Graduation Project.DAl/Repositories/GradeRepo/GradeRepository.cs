@@ -19,10 +19,31 @@ namespace Graduation_Project.DAl.Repositories.GradeRepo
 
             return session?.Course?.Name;
         }
-
         public IEnumerable<Grade> GetGradesByTraineeId(int traineeId)
         {
             return context.Grades.Where(g => g.TraineeId == traineeId).ToList();
+        }
+
+        public IEnumerable<Grade> GetGradesByCourseName(string courseName)
+        {
+            return context.Grades
+         .Include(g => g.Session)
+         .ThenInclude(s => s.Course)
+         .Include(g => g.Trainee)
+         .Where(g => g.Session.Course.Name== courseName)
+         .ToList();
+        }
+
+        
+
+        public IEnumerable<Grade> GetGradesByTraineeName(string studentName)
+        {
+                return context.Grades
+            .Include(g => g.Session)
+            .ThenInclude(s => s.Course)
+            .Include(g => g.Trainee)
+            .Where(g => g.Trainee.Name == studentName).ToList();
+
         }
     }
 }

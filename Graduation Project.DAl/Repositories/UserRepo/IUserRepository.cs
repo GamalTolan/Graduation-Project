@@ -12,5 +12,6 @@ namespace Graduation_Project.DAl.Repositories.UserRepo
         IEnumerable<User> SearchByName(string name);
         IEnumerable<User> SearchByRole(Role role);
         string GetTraineeNameById(int id);
+       
     }
 }
