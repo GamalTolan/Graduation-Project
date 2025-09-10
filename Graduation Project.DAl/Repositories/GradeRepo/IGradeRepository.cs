@@ -9,7 +9,11 @@ namespace Graduation_Project.DAl.Repositories.GradeRepo
 {
     public interface IGradeRepository : IGenericRepository<Grade>
     {
-        IEnumerable<Grade> GetGradesByTraineeId(int traineeId);
+  
         string GetCourseNameBySessionId(int sessionId);
+        IEnumerable<Grade> GetGradesByTraineeId(int traineeId);
+        IEnumerable<Grade> GetGradesByCourseName(string courseName);
+        IEnumerable<Grade> GetGradesByTraineeName(string studentName);
+
     }
 }

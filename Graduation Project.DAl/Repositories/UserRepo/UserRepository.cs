@@ -1,5 +1,6 @@
 ﻿using Graduation_Project.DAl.Data;
 using Graduation_Project.DAl.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace Graduation_Project.DAl.Repositories.UserRepo
 {
     public class UserRepository (AppDbContext context) : GenericRepository<User>(context), IUserRepository
     {
+       
+
         public string GetTraineeNameById(int id)
         {
             var user = context.Users.Find(id);

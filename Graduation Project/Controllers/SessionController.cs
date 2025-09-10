@@ -1,5 +1,7 @@
-﻿using Graduation_Project.BLL.Services.Interfaces;
+﻿using Graduation_Project.BLL.Pagination;
+using Graduation_Project.BLL.Services.Interfaces;
 using Graduation_Project.BLL.ViewModels.SessionVM;
+using Graduation_Project.DAl.Repositories.CourseRepo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -8,12 +10,15 @@ namespace Graduation_Project.Controllers
     public class SessionController : Controller
     {
         private readonly ISessionService _sessionService;
-        private readonly ICourseService _courseService; // To populate Course dropdown
+        private readonly ICourseService _courseService; 
+        private readonly ICourseRepository _courseRepository; 
 
-        public SessionController(ISessionService sessionService, ICourseService courseService)
+
+        public SessionController(ISessionService sessionService, ICourseService courseService, ICourseRepository courseRepository)
         {
             _sessionService = sessionService;
             _courseService = courseService;
+            _courseRepository = courseRepository;
         }
 
         // GET: Session
@@ -53,7 +58,7 @@ namespace Graduation_Project.Controllers
             if (ModelState.IsValid)
             {
                 _sessionService.Add(vm);
-                TempData["SuccessMessage"] = "Session created successfully!";
+                TempData["SuccessMessage2"] = "Session created successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -68,7 +73,7 @@ namespace Graduation_Project.Controllers
             var session = _sessionService.GetForEdit(id);
             if (session == null) return NotFound();
 
-            ViewBag.Courses = new SelectList(_courseService.GetAll(), "Id", "Name", session.CourseId);
+            ViewBag.Courses = _courseRepository.GetAll();
             return View(session);
         }
 
@@ -80,7 +85,7 @@ namespace Graduation_Project.Controllers
             if (ModelState.IsValid)
             {
                 _sessionService.Update(vm);
-                TempData["SuccessMessage"] = "Session updated successfully!";
+                TempData["SuccessMessage2"] = "Session updated successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -103,9 +108,29 @@ namespace Graduation_Project.Controllers
         public IActionResult DeleteConfirmed(int id)
         {
             _sessionService.Delete(id);
-            TempData["SuccessMessage"] = "Session deleted successfully!";
+            TempData["SuccessMessage2"] = "Session deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult Search(string courseName, int pageNumber = 1, int pageSize = 5)
+        {
+            ViewBag.IsSearch = true;
+            var sessions = _sessionService.GetByCourseName(courseName);
+            if (!sessions.Any())
+            {
+                TempData["Message"] = "No sessions found for this course name.";
+            }
+            var result = new PageResult<SessionVM>
+            {
+                Items = _sessionService.GetByCourseName(courseName).ToList(),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = _sessionService.GetByCourseName(courseName).Count()
+            };
+
+            return View("Index", result);
+        }
+
 
     }
 }

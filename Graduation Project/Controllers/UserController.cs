@@ -1,5 +1,7 @@
-﻿using Graduation_Project.BLL.Services.Interfaces;
+﻿using Graduation_Project.BLL.Pagination;
+using Graduation_Project.BLL.Services.Interfaces;
 using Graduation_Project.BLL.ViewModels.UserVM;
+using Graduation_Project.DAl.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Graduation_Project.Controllers
@@ -108,6 +110,7 @@ namespace Graduation_Project.Controllers
         public IActionResult DeleteConfirmed(int id)
         {
             _userService.Delete(id);
+            TempData["Success"] = "User Deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -121,6 +124,44 @@ namespace Graduation_Project.Controllers
             }
 
             return Json(true);
+        }
+        public IActionResult SearchByRole(Role role, int pageNumber = 1, int pageSize = 5)
+        {
+            var users = _userService.SearchByRole(role);
+
+            if (users == null || !users.Any())
+            {
+                TempData["Message"] = "No users found for this role.";
+                return RedirectToAction("Index");
+            }
+
+            var result = new PageResult<UserVM>
+            {
+                Items = users.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = users.Count()
+            };
+
+            return View("Index", result);
+        }
+
+        public IActionResult SearchByName(string name, int pageNumber = 1, int pageSize = 5)
+        {
+            var users = _userService.SearchByName(name);
+            if (users == null || !users.Any())
+            {
+                TempData["Message"] = "No users found with this name.";
+                return RedirectToAction("Index");
+            }
+            var result = new PageResult<UserVM>
+            {
+                Items = users.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = users.Count()
+            };
+            return View("Index", result);
         }
     }
 }

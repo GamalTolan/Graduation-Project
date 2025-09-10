@@ -117,7 +117,7 @@ namespace Graduation_Project.BLL.Services
                 TraineeId = grade.TraineeId,
                 SessionId = grade.SessionId,
                 TraineeName = _unitOfWork.Users.GetTraineeNameById(grade.TraineeId) ?? "N/A",
-                CourseName = grade.Session?.Course?.Name ?? "N/A",
+                CourseName = _unitOfWork.Grades.GetCourseNameBySessionId(grade.SessionId) ?? "N/A",
                 SessionName = $"Session {grade.SessionId}",
                 SessionStart = grade.Session?.StartDate ?? default,
                 SessionEnd = grade.Session?.EndDate ?? default
@@ -129,6 +129,36 @@ namespace Graduation_Project.BLL.Services
         {
             return _unitOfWork.Grades.GetAll()
                 .Any(g => g.TraineeId == traineeId && g.SessionId == sessionId);
+        }
+
+        public IEnumerable<GradeVM> GetGradesByCourseName(string courseName)
+        {
+            var grades = _unitOfWork.Grades.GetGradesByCourseName(courseName);
+
+            return grades.Select(g => new GradeVM
+            {
+                Id = g.Id,
+                Value = g.Value,
+                TraineeId = g.TraineeId,
+                TraineeName = _unitOfWork.Users.GetTraineeNameById(g.TraineeId) ?? "N/A",
+                CourseName = _unitOfWork.Grades.GetCourseNameBySessionId(g.SessionId),
+                SessionName = $"Session {g.SessionId}"
+            }).ToList();
+        }
+
+        public IEnumerable<GradeVM> GetGradesByTraineeName(string studentName)
+        {
+            var grades = _unitOfWork.Grades.GetGradesByTraineeName(studentName);
+
+            return grades.Select(g => new GradeVM
+            {
+                Id = g.Id,
+                Value = g.Value,
+                TraineeId = g.TraineeId,
+                TraineeName = _unitOfWork.Users.GetTraineeNameById(g.TraineeId) ?? "N/A",
+                CourseName = _unitOfWork.Grades.GetCourseNameBySessionId(g.SessionId),
+                SessionName = $"Session {g.SessionId}"
+            }).ToList();
         }
     }
 }

@@ -16,5 +16,8 @@ namespace Graduation_Project.BLL.Services.Interfaces
         PageResult<GradeVM> GetGradesByTrainee(int traineeId, int pageNumber, int pageSize);
         GradeDetailsVM? GetById(int id);
         bool IsGradeExists(int traineeId, int sessionId);
+        IEnumerable<GradeVM> GetGradesByCourseName(string courseName);
+        IEnumerable<GradeVM> GetGradesByTraineeName(string studentName);
+
     }
 }

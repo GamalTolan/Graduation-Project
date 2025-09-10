@@ -2,6 +2,8 @@
 using Graduation_Project.BLL.Services;
 using Graduation_Project.BLL.Services.Interfaces;
 using Graduation_Project.BLL.ViewModels.CourseVM;
+using Graduation_Project.DAl.Models;
+using Graduation_Project.DAl.Repositories;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,11 +14,14 @@ namespace Graduation_Project.Controllers
     {
         private readonly ICourseService _courseService;
         private readonly IUserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
+        
 
-        public CourseController(ICourseService courseService,IUserService userService)
+        public CourseController(ICourseService courseService,IUserService userService ,IUnitOfWork unitOfWork)
         {
             _courseService = courseService;
             _userService =  userService;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: /Courses
@@ -58,7 +63,7 @@ namespace Graduation_Project.Controllers
             }
 
             _courseService.Add(vm);
-            TempData["Success"] = "Course created successfully.";
+            TempData["Success2"] = "Course created successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -86,7 +91,7 @@ namespace Graduation_Project.Controllers
             }
 
             _courseService.Update(vm);
-            TempData["Success"] = "Course updated successfully.";
+            TempData["Success2"] = "Course updated successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -104,7 +109,7 @@ namespace Graduation_Project.Controllers
         public IActionResult DeleteConfirmed(int id)
         {
             _courseService.Delete(id);
-            TempData["Success"] = "Course deleted successfully.";
+            TempData["Success2"] = "Course deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
         public IActionResult CheckCourseNameIsUnique(string Name)
@@ -117,6 +122,33 @@ namespace Graduation_Project.Controllers
             return Json(true);
 
         }
+
+        public IActionResult Search(string name, Category? category)
+        {
+            IEnumerable<CourseVM> results;
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                results = _courseService.SearchByName(name);
+            }
+            else if (category.HasValue)
+            {
+                results = _courseService.SearchByCategory(category.Value);
+            }
+            else
+            {
+                results = new List<CourseVM>();
+            }
+
+            return View("Index", new PageResult<CourseVM>
+            {
+                Items = results,
+                PageNumber = 1,
+                PageSize = results.Count(),
+                TotalItems = results.Count()
+            });
+        }
+
     }
 }
 

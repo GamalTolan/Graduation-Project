@@ -1,56 +1,95 @@
 ﻿@using Graduation_Project.BLL.Pagination
-@model PageResult<CourseVM>
+@using Graduation_Project.DAl.Models
+@model PageResult<Graduation_Project.BLL.ViewModels.CourseVM.CourseVM>
 
 @{
     ViewData["Title"] = "Courses";
 }
 
 <h2>Courses</h2>
-
-@if (TempData["Success"] != null)
+@if (TempData["Success2"] != null)
 {
-    <div class="alert alert-success">@TempData["Success"]</div>
+    <div class="alert alert-success">@TempData["Success2"]</div>
 }
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Start</th>
-            <th>End</th>
-           
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var course in Model.Items)
-    {
-        <tr>
-            <td>@course.Name</td>
-            <td>@course.Category</td>
-            <td>@course.StartDate.ToShortDateString()</td>
-            <td>@course.EndDate.ToShortDateString()</td>
-           
-            <td>
-                <a asp-action="Details" asp-route-id="@course.Id">Details</a> |
-                <a asp-action="Edit" asp-route-id="@course.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@course.Id">Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+
+<!-- زرار Create -->
+<p>
+    <a asp-action="Create" class="btn btn-success">➕ Create New Course</a>
+</p>
+
+
+
+<!-- البحث -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form asp-action="Search" method="get" class="d-flex">
+            <input type="text" name="name" class="form-control me-2" placeholder="Search by Course Name..." />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <form asp-action="Search" method="get" class="d-flex">
+            <select name="category" class="form-select me-2">
+                <option value="">-- Select Category --</option>
+                @foreach (var category in Enum.GetValues(typeof(Category)))
+                {
+                    <option value="@category">@category</option>
+                }
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div>
+</div>
+
+<!-- جدول الكورسات -->
+@if (Model.Items.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in Model.Items)
+            {
+                <tr>
+                    <td>@course.Name</td>
+                    <td>@course.Category</td>
+                    <td>@course.StartDate.ToShortDateString()</td>
+                    <td>@course.EndDate.ToShortDateString()</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@course.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="Details" asp-route-id="@course.Id" class="btn btn-info btn-sm">Details</a>
+                        <a asp-action="Delete" asp-route-id="@course.Id" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">No courses found.</div>
+}
 
 <!-- Pagination -->
-<nav>
-    <ul class="pagination">
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-pageSize="@Model.PageSize">@i</a>
-            </li>
-        }
-    </ul>
-</nav>
-
-<a class="btn btn-primary" asp-action="Create">Create New</a>
+@if (Model.TotalItems > Model.PageSize)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= Math.Ceiling((decimal)Model.TotalItems / Model.PageSize); i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

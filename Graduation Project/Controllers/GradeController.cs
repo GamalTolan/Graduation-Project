@@ -1,4 +1,5 @@
-﻿using Graduation_Project.BLL.Services.Interfaces;
+﻿using Graduation_Project.BLL.Pagination;
+using Graduation_Project.BLL.Services.Interfaces;
 using Graduation_Project.BLL.ViewModels.GradeVM;
 using Graduation_Project.DAl.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -111,8 +112,49 @@ namespace Graduation_Project.Controllers
                 .Select(s => new SelectListItem
                 {
                     Value = s.Id.ToString(),
-                    Text = $"{s.CourseName} ({s.StartDate:yyyy-MM-dd})"
+                    Text = $"{s.CourseName}"
                 }).ToList();
         }
+        public IActionResult Details(int id)
+        {
+            var grade = _gradeService.GetById(id);
+            if (grade == null) return NotFound();
+
+            return View(grade);
+        }
+
+        public IActionResult SearchByCourse(string courseName, int pageNumber = 1, int pageSize = 5)
+        {
+            var grades = _gradeService.GetGradesByCourseName(courseName);
+            if (!grades.Any())
+                TempData["Message"] = "No grades found for this course.";
+
+            var result = new PageResult<GradeVM>
+            {
+                Items = grades,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = grades.Count()
+            };
+
+            return View("Index", result);
+        }
+
+        public IActionResult SearchByTrainee(string traineeName, int pageNumber = 1, int pageSize = 5)
+        {
+            var grades = _gradeService.GetGradesByTraineeName(traineeName);
+            if (!grades.Any())
+                TempData["Message"] = "No grades found for this trainee.";
+            var result = new PageResult<GradeVM>
+            {
+                Items = grades,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = grades.Count()
+            };
+            return View("Index", result);
+        }
+
+       
     }
 }
