@@ -52,7 +52,7 @@ namespace Graduation_Project.BLL.Services
             {
                 CourseId = vm.CourseId, 
                 StartDate = vm.StartDate,
-                EndDate = vm.EndDate,
+                EndDate = vm.EndDate,  
        
             };
 

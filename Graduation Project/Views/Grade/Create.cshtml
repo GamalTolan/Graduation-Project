@@ -1,23 +1,24 @@
 ﻿@model BaseGradeVM
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="SessionId"></label>
-        <select asp-for="SessionId" class="form-control" asp-items="ViewBag.Sessions"></select>
-        <span asp-validation-for="SessionId" class="text-danger"></span>
-    </div>
+@{
+    ViewData["Title"] = "Create Grade";
+}
 
-    <div class="form-group">
-        <label asp-for="TraineeId"></label>
-        <select asp-for="TraineeId" class="form-control" asp-items="ViewBag.Trainees"></select>
-        <span asp-validation-for="TraineeId" class="text-danger"></span>
-    </div>
+<div class="container mt-4">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
 
-    <div class="form-group">
-        <label asp-for="Value"></label>
-        <input asp-for="Value" class="form-control" />
-        <span asp-validation-for="Value" class="text-danger"></span>
-    </div>
+    <form asp-action="Create" method="post" class="card shadow p-4">
+        @Html.Partial("_GradeForm", Model)
 
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

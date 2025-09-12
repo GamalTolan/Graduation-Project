@@ -10,7 +10,6 @@ namespace Graduation_Project.BLL.ViewModels.UserVM
     public class EditUserVM : BaseUserVM
     {
         public int Id { get; set; }
-        [Required, EmailAddress]
-        public string Email { get; set; }
+        
     }
 }

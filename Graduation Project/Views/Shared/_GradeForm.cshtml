@@ -1,0 +1,30 @@
+﻿@model BaseGradeVM
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+@if (Model is GradeDetailsVM detailsVm)
+{
+    <input type="hidden" asp-for="@detailsVm.Id" />
+}
+
+<div class="mb-3">
+    <label asp-for="SessionId" class="form-label fw-bold">Session</label>
+    <select asp-for="SessionId" class="form-select" asp-items="ViewBag.Sessions">
+        <option value="">-- Select Session --</option>
+    </select>
+    <span asp-validation-for="SessionId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="TraineeId" class="form-label fw-bold">Trainee</label>
+    <select asp-for="TraineeId" class="form-select" asp-items="ViewBag.Trainees">
+        <option value="">-- Select Trainee --</option>
+    </select>
+    <span asp-validation-for="TraineeId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Value" class="form-label fw-bold"></label>
+    <input asp-for="Value" class="form-control" />
+    <span asp-validation-for="Value" class="text-danger"></span>
+</div>

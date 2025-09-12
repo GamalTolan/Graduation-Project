@@ -1,6 +1,4 @@
-﻿@using Graduation_Project.DAl.Models
-@model EditUserVM
-
+﻿@model Graduation_Project.BLL.ViewModels.UserVM.EditUserVM
 
 @{
     ViewData["Title"] = "Edit User";
@@ -8,32 +6,15 @@
 
 <h2>@ViewData["Title"]</h2>
 
-
-
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" method="post" class="card shadow p-4">
     <input type="hidden" asp-for="Id" />
 
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
+    @Html.Partial("_UserForm", Model)
 
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+    <div class="d-flex justify-content-between mt-3">
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        <button type="submit" class="btn btn-success">Save Changes</button>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Role"></label>
-        <select asp-for="Role" class="form-control"
-                asp-items="Html.GetEnumSelectList<Role>()"></select>
-        <span asp-validation-for="Role" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-success">Save Changes</button>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </form>
 
 @section Scripts {

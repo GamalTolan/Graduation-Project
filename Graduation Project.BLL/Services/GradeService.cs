@@ -160,5 +160,21 @@ namespace Graduation_Project.BLL.Services
                 SessionName = $"Session {g.SessionId}"
             }).ToList();
         }
+
+        public IEnumerable<GradeVM> GetAll()
+        {
+            return _unitOfWork.Grades.GetAll()
+                .Select(g => new GradeVM
+                {
+                    Id = g.Id,
+                    TraineeName= _unitOfWork.Users.GetTraineeNameById(g.TraineeId) ?? "N/A",
+                    SessionId = g.SessionId,
+                    CourseName= _unitOfWork.Grades.GetCourseNameBySessionId(g.SessionId) ?? "N/A",
+                    TraineeId = g.TraineeId,
+                    Value = g.Value
+                })
+                .ToList();
+
+        }
     }
 }

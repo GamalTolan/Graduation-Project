@@ -11,10 +11,21 @@ namespace Graduation_Project.BLL.Validators
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is null)
-                return ValidationResult.Success; 
+            if (value is DateTime dateValue)
+            {
+                
+                var idProperty = validationContext.ObjectType.GetProperty("Id");
+                if (idProperty != null)
+                {
+                    var idValue = (int)idProperty.GetValue(validationContext.ObjectInstance)!;
+                    if (idValue > 0) 
+                    {
+                        return ValidationResult.Success;
+                    }
+                }  
+            }
 
-            if (value is DateTime date && date < DateTime.Today)
+                if (value is DateTime date && date < DateTime.Today)
                 return new ValidationResult("Date cannot be in the past.");
 
             return ValidationResult.Success;

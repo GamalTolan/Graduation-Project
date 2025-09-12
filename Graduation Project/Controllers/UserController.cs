@@ -116,9 +116,10 @@ namespace Graduation_Project.Controllers
 
         // Remote Validation: check if email is unique (AJAX)
         [AcceptVerbs("Get", "Post")]
-        public IActionResult IsEmailUnique(string email)
+        public IActionResult IsEmailUnique(string email, int id)
         {
-            if (_userService.IsEmailExists(email))
+            
+            if (_userService.IsEmailExists(email,id))
             {
                 return Json($"Email '{email}' is already in use.");
             }

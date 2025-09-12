@@ -89,12 +89,14 @@ namespace Graduation_Project.BLL.Services
             _unitOfWork.Save();
         }
 
-       
 
-        public bool IsEmailExists(string email)
+
+        public bool IsEmailExists(string email, int? id = null)
         {
-            return _unitOfWork.Users.GetAll().Any(u => u.Email == email);
+            return _unitOfWork.Users.GetAll()
+                .Any(u => u.Email == email && (id == null || u.Id != id.Value));
         }
+       
         public PageResult<UserVM> GetAllWithPagination(int pageNumber, int pageSize)
         {
             var users = _unitOfWork.Users.GetAllWithPagination(pageNumber, pageSize)
