@@ -49,7 +49,7 @@ namespace Graduation_Project.Controllers
                 }
 
                 _gradeService.Add(vm);
-                TempData["SuccessMessage"] = "Grade created successfully!";
+                TempData["GradeSuccess"] = "Grade created successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -73,7 +73,7 @@ namespace Graduation_Project.Controllers
             if (ModelState.IsValid)
             {
                 _gradeService.Update(vm);
-                TempData["SuccessMessage"] = "Grade updated successfully!";
+                TempData["GradeSuccess"] = "Grade updated successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -94,7 +94,7 @@ namespace Graduation_Project.Controllers
         public IActionResult DeleteConfirmed(int id)
         {
             _gradeService.Delete(id);
-            TempData["SuccessMessage"] = "Grade deleted successfully!";
+            TempData["GradeSuccess"] = "Grade deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -127,7 +127,7 @@ namespace Graduation_Project.Controllers
         {
             var grades = _gradeService.GetGradesByCourseName(courseName);
             if (!grades.Any())
-                TempData["Message"] = "No grades found for this course.";
+                TempData["GradeMessage"] = "No grades found for this course.";
 
             var result = new PageResult<GradeVM>
             {
@@ -144,7 +144,7 @@ namespace Graduation_Project.Controllers
         {
             var grades = _gradeService.GetGradesByTraineeName(traineeName);
             if (!grades.Any())
-                TempData["Message"] = "No grades found for this trainee.";
+                TempData["GradeMessage"] = "No grades found for this trainee.";
             var result = new PageResult<GradeVM>
             {
                 Items = grades,

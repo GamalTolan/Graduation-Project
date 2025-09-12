@@ -1,21 +1,25 @@
-﻿@model PageResult<GradeVM>
+﻿@model Graduation_Project.BLL.Pagination.PageResult<Graduation_Project.BLL.ViewModels.GradeVM.GradeVM>
 
 @{
     ViewData["Title"] = "Grades";
 }
 
-<h2>Grades</h2>
-@if (TempData["SuccessMessage"] != null)
+<h2>@ViewData["Title"]</h2>
+
+<!-- رسائل النجاح أو التحذير -->
+@if (TempData["GradeSuccess"] != null)
 {
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    <div class="alert alert-success">@TempData["GradeSuccess"]</div>
+}
+@if (TempData["GradeMessage"] != null)
+{
+    <div class="alert alert-warning">@TempData["GradeMessage"]</div>
 }
 
 <!-- زرار Create -->
 <p>
     <a asp-action="Create" class="btn btn-success">➕ Add New Grade</a>
 </p>
-
-
 
 <!-- البحث -->
 <div class="row mb-3">
@@ -66,7 +70,8 @@
 }
 else
 {
-    <div class="alert alert-info">No grades found.</div>
+    <!-- عرض الرسالة في نفس الصفحة فوق الجدول -->
+    <div class="alert alert-warning">No grades found.</div>
 }
 
 <!-- Pagination -->

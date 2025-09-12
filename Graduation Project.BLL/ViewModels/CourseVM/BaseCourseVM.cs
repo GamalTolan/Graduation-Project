@@ -26,13 +26,15 @@ namespace Graduation_Project.BLL.ViewModels.CourseVM
 
         [Required, DataType(DataType.Date)]
         [FutureDate]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         [Display(Name = "Start Date")]
-        public DateTime StartDate { get; set; }
+        public DateTime StartDate { get; set; } 
 
         [Required, DataType(DataType.Date)]
         [DateAfter(nameof(StartDate))]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         [Display(Name = "End Date")]
-        public DateTime EndDate { get; set; }
+        public DateTime EndDate { get; set; } 
 
 
         public bool IsActive { get; set; }

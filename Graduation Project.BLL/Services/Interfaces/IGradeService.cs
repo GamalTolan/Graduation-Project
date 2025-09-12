@@ -6,6 +6,7 @@ namespace Graduation_Project.BLL.Services.Interfaces
 {
     public interface IGradeService
     {
+        IEnumerable<GradeVM> GetAll();
         void Add(BaseGradeVM vm);
         
         void Update(GradeDetailsVM vm);

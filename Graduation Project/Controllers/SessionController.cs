@@ -28,12 +28,7 @@ namespace Graduation_Project.Controllers
             return View(result);
         }
 
-        //// GET: Session/GetAll (without pagination)
-        //public IActionResult GetAll()
-        //{
-        //    var sessions = _sessionService.GetAll();
-        //    return View(sessions);
-        //}
+       
 
         // GET: Session/Details/5
         public IActionResult Details(int id)
@@ -73,7 +68,7 @@ namespace Graduation_Project.Controllers
             var session = _sessionService.GetForEdit(id);
             if (session == null) return NotFound();
 
-            ViewBag.Courses = _courseRepository.GetAll();
+            ViewBag.Courses = new SelectList(_courseService.GetAll(), "Id", "Name", session.CourseId);
             return View(session);
         }
 
@@ -118,7 +113,7 @@ namespace Graduation_Project.Controllers
             var sessions = _sessionService.GetByCourseName(courseName);
             if (!sessions.Any())
             {
-                TempData["Message"] = "No sessions found for this course name.";
+                TempData["ErrorMessage"] = "No sessions found for this course name.";
             }
             var result = new PageResult<SessionVM>
             {

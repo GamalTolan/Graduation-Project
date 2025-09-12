@@ -1,32 +1,40 @@
-using System.Diagnostics;
-using Graduation_Project.Models;
+using Graduation_Project.BLL.Services.Interfaces;
+using Graduation_Project.BLL.ViewModels;
+using Graduation_Project.BLL.ViewModels.DashboardVM;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Graduation_Project.Controllers
+namespace Graduation_Project.UI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IUserService _userService;
+        private readonly ICourseService _courseService;
+        private readonly ISessionService _sessionService;
+        private readonly IGradeService _gradeService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            IUserService userService,
+            ICourseService courseService,
+            ISessionService sessionService,
+            IGradeService gradeService)
         {
-            _logger = logger;
+            _userService = userService;
+            _courseService = courseService;
+            _sessionService = sessionService;
+            _gradeService = gradeService;
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
+            var vm = new DashboardVM
+            {
+                TotalUsers = _userService.GetAll().Count(),
+                TotalCourses = _courseService.GetAll().Count(),
+                TotalSessions = _sessionService.GetAll().Count(),
+                TotalGrades = _gradeService.GetAll().Count()
+            };
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(vm);
         }
     }
 }
