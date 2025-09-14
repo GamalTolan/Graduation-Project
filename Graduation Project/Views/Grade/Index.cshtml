@@ -6,7 +6,6 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<!-- رسائل النجاح أو التحذير -->
 @if (TempData["GradeSuccess"] != null)
 {
     <div class="alert alert-success">@TempData["GradeSuccess"]</div>
@@ -16,12 +15,12 @@
     <div class="alert alert-warning">@TempData["GradeMessage"]</div>
 }
 
-<!-- زرار Create -->
+
 <p>
     <a asp-action="Create" class="btn btn-success">➕ Add New Grade</a>
 </p>
 
-<!-- البحث -->
+
 <div class="row mb-3">
     <div class="col-md-6">
         <form asp-action="SearchByCourse" method="get" class="d-flex">
@@ -37,7 +36,7 @@
     </div>
 </div>
 
-<!-- جدول الدرجات -->
+
 @if (Model.Items.Any())
 {
     <table class="table table-bordered table-striped">
@@ -70,7 +69,6 @@
 }
 else
 {
-    <!-- عرض الرسالة في نفس الصفحة فوق الجدول -->
     <div class="alert alert-warning">No grades found.</div>
 }
 

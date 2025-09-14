@@ -13,14 +13,14 @@
 }
 
 
-<!-- زرار Create -->
+
 <p>
     <a asp-action="Create" class="btn btn-success">➕ Create New Course</a>
 </p>
 
 
 
-<!-- البحث -->
+
 <div class="row mb-3">
     <div class="col-md-6">
         <form asp-action="Search" method="get" class="d-flex">
@@ -43,7 +43,7 @@
     </div>
 </div>
 
-<!-- جدول الكورسات -->
+
 @if (Model.Items.Any())
 {
     <table class="table table-bordered table-striped">

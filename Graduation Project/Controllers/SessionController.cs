@@ -11,14 +11,13 @@ namespace Graduation_Project.Controllers
     {
         private readonly ISessionService _sessionService;
         private readonly ICourseService _courseService; 
-        private readonly ICourseRepository _courseRepository; 
+        
 
 
-        public SessionController(ISessionService sessionService, ICourseService courseService, ICourseRepository courseRepository)
+        public SessionController(ISessionService sessionService, ICourseService courseService)
         {
             _sessionService = sessionService;
             _courseService = courseService;
-            _courseRepository = courseRepository;
         }
 
         // GET: Session
@@ -62,7 +61,7 @@ namespace Graduation_Project.Controllers
             return View(vm);
         }
 
-        // ✅ GET: Session/Edit/5
+        // GET: Session/Edit
         public IActionResult Edit(int id)
         {
             var session = _sessionService.GetForEdit(id);
@@ -72,7 +71,7 @@ namespace Graduation_Project.Controllers
             return View(session);
         }
 
-        // ✅ POST: Session/Edit/5
+        // POST: Session/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EditSessionVM vm)
@@ -89,7 +88,7 @@ namespace Graduation_Project.Controllers
             return View(vm);
         }
 
-        // ✅ GET: Session/Delete/5
+        //GET: Session/Delete
         public IActionResult Delete(int id)
         {
             var session = _sessionService.GetById(id);
@@ -97,7 +96,7 @@ namespace Graduation_Project.Controllers
             return View(session);
         }
 
-        // ✅ POST: Session/Delete/5
+        // POST: Session/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)

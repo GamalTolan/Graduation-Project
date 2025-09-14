@@ -78,24 +78,7 @@ namespace Graduation_Project.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Users/Delete/5
-        //public IActionResult Delete(int id)
-        //{
-        //    var user = _userService.GetById(id);
-        //    if (user == null) return NotFound();
-
-        //    return View(user);
-        //}
-
-        //// POST: /Users/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult DeleteConfirmed(int id)
-        //{
-        //    _userService.Delete(id);
-        //    TempData["Success"] = "User deleted successfully.";
-        //    return RedirectToAction(nameof(Index));
-        //}
+      
         // GET: User/Delete/5
         public IActionResult Delete(int id)
         {
