@@ -10,12 +10,10 @@
     <div class="alert alert-success">@TempData["SuccessMessage2"]</div>
 }
 
-<!-- زرار Create -->
 <p>
     <a asp-action="Create" class="btn btn-success">➕ Create New Session</a>
 </p>
 
-<!-- رسائل النجاح أو الفشل -->
 @if (TempData["Message"] != null)
 {
     <div class="alert alert-warning">@TempData["Message"]</div>
@@ -26,7 +24,6 @@
     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
 }
 
-<!-- البحث -->
 <div class="row mb-3">
     <div class="col-md-6">
         <form asp-action="Search" method="get" class="d-flex">
@@ -36,7 +33,7 @@
     </div>
 </div>
 
-<!-- جدول عرض السيشنز -->
+
 @if (Model.Items.Any())
 {
     <table class="table table-bordered table-striped">
